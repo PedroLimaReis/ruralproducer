@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  api-desafio-agricultura:
+    image: bitnami/postgresql
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRESQL_USERNAME=agricultura
+      - POSTGRESQL_PASSWORD=abcde
+      - POSTGRESQL_DATABASE=desafio_agricultura
