@@ -34,19 +34,19 @@ $ npm run start:dev
 ## Rotas da aplicação
 
 ROTA PARA BUSCAR TODOS OS PRODUTORES
-GET - /
+- GET - /
 
 ROTA PARA BUSCAR INFORMAÇÕES DO DASHBOARD
-GET - /dashboard
+- GET - /dashboard
 
 ROTA PARA CRIAR UM PRODUTOR RURAL
-POST - /
+- POST - /
 
 ROTA PARA DELETAR UM PRODUTOR RURAL
-PUT - /:id
+- PUT - /:id
 
 ROTA PARA CRIAR UM PRODUTOR RURAL
-DELETE - /
+- DELETE - /
 
 ## JSON para serem utilizados
 ``` JSON
