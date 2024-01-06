@@ -1,10 +1,10 @@
 
 ### Tecnologias
-Typescript
-PostgresSQL
-Prisma
-Express
-SOLID
+- Typescript
+- PostgresSQL
+- Prisma
+- Express
+- SOLID
 
 ## Instalação
 
