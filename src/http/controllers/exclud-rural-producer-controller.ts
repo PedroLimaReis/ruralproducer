@@ -1,7 +1,8 @@
 import { Request, Response } from 'express'
-import { excludedRuralProducerUseCase } from '../../use-cases/excluded-rural-producer-use-case'
+import { ExcludedRuralProducerUseCase } from '../../use-cases/excluded-rural-producer-use-case'
 import { ProducerNotExistError } from '../../use-cases/errors/producer-not-exist-error'
 import { ZodError, z } from 'zod'
+import { PrismaRuralProducerRepository } from '../../repositories/prisma-rural-producer-repository'
 
 export async function excludRuralProducerController(
   request: Request,
@@ -13,8 +14,12 @@ export async function excludRuralProducerController(
     })
 
     const { id } = registerParamsSchema.parse(request.params)
+    const prismaRuralProducerRepository = new PrismaRuralProducerRepository()
+    const excludedRuralProducerUseCase = new ExcludedRuralProducerUseCase(
+      prismaRuralProducerRepository,
+    )
 
-    await excludedRuralProducerUseCase(id)
+    await excludedRuralProducerUseCase.execute(id)
 
     return response.json()
   } catch (err) {

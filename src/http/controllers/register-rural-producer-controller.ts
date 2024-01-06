@@ -1,9 +1,10 @@
 import { Request, Response } from 'express'
-import { registerRuralProducerUseCase } from '../../use-cases/register-rural-producer-use-case'
+import { RegisterRuralProducerUseCase } from '../../use-cases/register-rural-producer-use-case'
 import { ZodError, z } from 'zod'
 import { PlantetCropsType } from '@prisma/client'
 import { DocumentExistError } from '../../use-cases/errors/document-exist-error'
 import { DocumentInvalidError } from '../../use-cases/errors/doument-invalid-error'
+import { PrismaRuralProducerRepository } from '../../repositories/prisma-rural-producer-repository'
 
 export async function registerRuralProducerController(
   request: Request,
@@ -34,7 +35,12 @@ export async function registerRuralProducerController(
       plantetCrops,
     } = registerBodySchema.parse(request.body)
 
-    await registerRuralProducerUseCase({
+    const prismaRuralProducerRepository = new PrismaRuralProducerRepository()
+    const registerRuralProducerUseCase = new RegisterRuralProducerUseCase(
+      prismaRuralProducerRepository,
+    )
+
+    await registerRuralProducerUseCase.execute({
       document,
       nameProducer,
       nameFarm,

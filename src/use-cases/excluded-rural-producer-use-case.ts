@@ -1,16 +1,17 @@
-import { PrismaRuralProducerRepository } from '../repositories/prisma-rural-producer-repository'
 import { ProducerNotExistError } from './errors/producer-not-exist-error'
 
-export async function excludedRuralProducerUseCase(id: string) {
-  const prismaRuralProducerRepository = new PrismaRuralProducerRepository()
+export class ExcludedRuralProducerUseCase {
+  constructor(private ruralProducerRepository) {}
 
-  const producerExist = await prismaRuralProducerRepository.getProducerById(id)
+  async execute(id: string) {
+    const producerExist = await this.ruralProducerRepository.getProducerById(id)
 
-  if (!producerExist) {
-    throw new ProducerNotExistError()
+    if (!producerExist) {
+      throw new ProducerNotExistError()
+    }
+
+    await this.ruralProducerRepository.deleteById(id)
+
+    return
   }
-
-  await prismaRuralProducerRepository.deleteById(id)
-
-  return
 }

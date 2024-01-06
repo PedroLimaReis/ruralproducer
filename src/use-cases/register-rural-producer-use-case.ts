@@ -1,8 +1,7 @@
 import { PlantetCropsType } from '@prisma/client'
-import { PrismaRuralProducerRepository } from '../repositories/prisma-rural-producer-repository'
-import { validateAreaFarmUseCase } from './validate-area-farm-use-case'
-import { checkDocumentExistUseCase } from './check-document-exist-use-case'
-import { validateDocumentUseCase } from './validate-document-use-case'
+import { ValidateAreaFarmUseCase } from './validate-area-farm-use-case'
+import { CheckDocumentExistUseCase } from './check-document-exist-use-case'
+import { ValidateDocumentUseCase } from './validate-document-use-case'
 import { DocumentExistError } from './errors/document-exist-error'
 
 interface CreateRuralProducerRequest {
@@ -17,35 +16,11 @@ interface CreateRuralProducerRequest {
   plantetCrops: PlantetCropsType[]
 }
 
-export async function registerRuralProducerUseCase({
-  document,
-  nameProducer,
-  nameFarm,
-  city,
-  state,
-  areaFarm,
-  areaForPlant,
-  areaForVegetation,
-  plantetCrops,
-}: CreateRuralProducerRequest) {
-  const documentValidate = await validateDocumentUseCase(document)
+export class RegisterRuralProducerUseCase {
+  constructor(private ruralProducerRepository) {}
 
-  const documentExist = await checkDocumentExistUseCase(documentValidate)
-
-  if (documentExist) {
-    throw new DocumentExistError()
-  }
-
-  await validateAreaFarmUseCase({
-    areaFarm,
-    areaForPlant,
-    areaForVegetation,
-  })
-
-  const prismaRuralProducerRepository = new PrismaRuralProducerRepository()
-
-  await prismaRuralProducerRepository.create({
-    document: documentValidate,
+  async execute({
+    document,
     nameProducer,
     nameFarm,
     city,
@@ -54,7 +29,45 @@ export async function registerRuralProducerUseCase({
     areaForPlant,
     areaForVegetation,
     plantetCrops,
-  })
+  }: CreateRuralProducerRequest) {
+    const validateDocumentUseCase = new ValidateDocumentUseCase()
+    const documentValidate = await validateDocumentUseCase.execute(document)
+    console.log('aqui')
+    const checkDocumentExistUseCase = new CheckDocumentExistUseCase(
+      this.ruralProducerRepository,
+    )
 
-  return
+    console.log('aqui2 ')
+
+    const documentExist =
+      await checkDocumentExistUseCase.execute(documentValidate)
+
+    console.log('aqui3 ')
+
+    if (documentExist) {
+      throw new DocumentExistError()
+    }
+
+    const validateAreaFarmUseCase = new ValidateAreaFarmUseCase()
+
+    await validateAreaFarmUseCase.execute({
+      areaFarm,
+      areaForPlant,
+      areaForVegetation,
+    })
+
+    await this.ruralProducerRepository.create({
+      document: documentValidate,
+      nameProducer,
+      nameFarm,
+      city,
+      state,
+      areaFarm,
+      areaForPlant,
+      areaForVegetation,
+      plantetCrops,
+    })
+
+    return
+  }
 }

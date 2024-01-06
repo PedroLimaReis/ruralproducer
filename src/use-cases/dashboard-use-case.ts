@@ -1,22 +1,22 @@
-import { PrismaRuralProducerRepository } from '../repositories/prisma-rural-producer-repository'
+export class DashboardProducerUseCase {
+  constructor(private ruralProducerRepository) {}
 
-export async function dashboardProducerUseCase() {
-  const prismaRuralProducerRepository = new PrismaRuralProducerRepository()
-
-  return {
-    amoutFarmTotals: (await prismaRuralProducerRepository.getCountFarm())
-      .document,
-    hectaresFarmTotals: (await prismaRuralProducerRepository.getAreaFarm())._sum
-      .areaFarm,
-    graphicState: await prismaRuralProducerRepository.getCountFarmForState(),
-    graphicCulture:
-      await prismaRuralProducerRepository.getCountFarmForPlantet(),
-    graphicGround: {
-      areaForPlant: (await prismaRuralProducerRepository.getPlantGround())._sum
-        .areaForPlant,
-      areaForVegetation: (
-        await prismaRuralProducerRepository.getVegetationGround()
-      )._sum.areaForVegetation,
-    },
+  async execute() {
+    return {
+      amoutFarmTotals: (await this.ruralProducerRepository.getCountFarm())
+        .document,
+      hectaresFarmTotals: (await this.ruralProducerRepository.getAreaFarm())
+        ._sum.areaFarm,
+      graphicState: await this.ruralProducerRepository.getCountFarmForState(),
+      graphicCulture:
+        await this.ruralProducerRepository.getCountFarmForPlantet(),
+      graphicGround: {
+        areaForPlant: (await this.ruralProducerRepository.getPlantGround())._sum
+          .areaForPlant,
+        areaForVegetation: (
+          await this.ruralProducerRepository.getVegetationGround()
+        )._sum.areaForVegetation,
+      },
+    }
   }
 }

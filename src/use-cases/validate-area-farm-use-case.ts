@@ -6,16 +6,18 @@ interface ValidateAreaFarmRequest {
   areaForVegetation: number
 }
 
-export async function validateAreaFarmUseCase({
-  areaFarm,
-  areaForPlant,
-  areaForVegetation,
-}: ValidateAreaFarmRequest) {
-  const areaPlantAndVegetation = areaForPlant + areaForVegetation
+export class ValidateAreaFarmUseCase {
+  async execute({
+    areaFarm,
+    areaForPlant,
+    areaForVegetation,
+  }: ValidateAreaFarmRequest) {
+    const areaPlantAndVegetation = areaForPlant + areaForVegetation
 
-  if (areaFarm < areaPlantAndVegetation) {
-    throw new InvalidAreaError()
+    if (areaFarm < areaPlantAndVegetation) {
+      throw new InvalidAreaError()
+    }
+
+    return
   }
-
-  return
 }

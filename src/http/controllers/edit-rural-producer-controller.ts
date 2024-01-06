@@ -1,11 +1,12 @@
 import { Request, Response } from 'express'
-import { editRuralProducerUseCase } from '../../use-cases/edit-rural-producer-use-case'
+import { EditRuralProducerUseCase } from '../../use-cases/edit-rural-producer-use-case'
 import { ProducerNotExistError } from '../../use-cases/errors/producer-not-exist-error'
 import { ZodError, z } from 'zod'
 import { PlantetCropsType } from '@prisma/client'
 import { DocumentExistError } from '../../use-cases/errors/document-exist-error'
 import { DocumentInvalidError } from '../../use-cases/errors/doument-invalid-error'
 import { InvalidAreaError } from '../../use-cases/errors/invalid-area-error'
+import { PrismaRuralProducerRepository } from '../../repositories/prisma-rural-producer-repository'
 
 export async function editRuralProducerController(
   request: Request,
@@ -41,8 +42,12 @@ export async function editRuralProducerController(
     } = editBodySchema.parse(request.body)
 
     const { id } = editParamsSchema.parse(request.params)
+    const prismaRuralProducerRepository = new PrismaRuralProducerRepository()
+    const editRuralProducerUseCase = new EditRuralProducerUseCase(
+      prismaRuralProducerRepository,
+    )
 
-    await editRuralProducerUseCase({
+    await editRuralProducerUseCase.execute({
       id,
       document,
       nameProducer,
